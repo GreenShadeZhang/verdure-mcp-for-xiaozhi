@@ -10,6 +10,18 @@ public class McpSessionConfiguration
     public string WebSocketEndpoint { get; set; } = string.Empty;
     public string UserId { get; set; } = string.Empty;
     public List<McpServiceEndpoint> McpServices { get; set; } = new();
+
+    /// <summary>Connection type: "xiaozhi" (default) or "tuya".</summary>
+    public string ConnectionType { get; set; } = "xiaozhi";
+
+    /// <summary>Tuya IoT platform base URL (e.g. https://openapi.tuyaeu.com). Used when ConnectionType is "tuya".</summary>
+    public string? TuyaEndpoint { get; set; }
+
+    /// <summary>Tuya Access ID. Used when ConnectionType is "tuya".</summary>
+    public string? TuyaAccessId { get; set; }
+
+    /// <summary>Tuya Access Secret. Used when ConnectionType is "tuya".</summary>
+    public string? TuyaAccessSecret { get; set; }
 }
 
 /// <summary>

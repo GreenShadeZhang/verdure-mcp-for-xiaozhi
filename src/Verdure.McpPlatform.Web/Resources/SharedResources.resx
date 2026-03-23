@@ -508,6 +508,39 @@
   <data name="WebSocketEndpointExample" xml:space="preserve">
     <value>e.g., wss://api.xiaozhi.me/mcp/?token=YOUR_TOKEN</value>
   </data>
+  <data name="ConnectionType" xml:space="preserve">
+    <value>Connection Type</value>
+  </data>
+  <data name="ConnectionTypeXiaozhi" xml:space="preserve">
+    <value>Xiaozhi AI</value>
+  </data>
+  <data name="ConnectionTypeTuya" xml:space="preserve">
+    <value>Tuya IoT</value>
+  </data>
+  <data name="TuyaEndpoint" xml:space="preserve">
+    <value>Tuya API Endpoint</value>
+  </data>
+  <data name="TuyaEndpointRequired" xml:space="preserve">
+    <value>Tuya API Endpoint is required</value>
+  </data>
+  <data name="TuyaEndpointExample" xml:space="preserve">
+    <value>e.g., https://openapi.tuyaeu.com</value>
+  </data>
+  <data name="TuyaAccessId" xml:space="preserve">
+    <value>Tuya Access ID</value>
+  </data>
+  <data name="TuyaAccessIdRequired" xml:space="preserve">
+    <value>Tuya Access ID is required</value>
+  </data>
+  <data name="TuyaAccessSecret" xml:space="preserve">
+    <value>Tuya Access Secret</value>
+  </data>
+  <data name="TuyaAccessSecretRequired" xml:space="preserve">
+    <value>Tuya Access Secret is required</value>
+  </data>
+  <data name="TuyaAccessSecretEditHint" xml:space="preserve">
+    <value>Leave blank to keep existing secret</value>
+  </data>
   <data name="DescriptionOptional" xml:space="preserve">
     <value>Optional description for this Xiaozhi connection</value>
   </data>

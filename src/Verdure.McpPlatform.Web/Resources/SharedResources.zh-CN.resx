@@ -522,6 +522,39 @@
   <data name="WebSocketEndpointExample" xml:space="preserve">
     <value>例如：wss://api.xiaozhi.me/mcp/?token=YOUR_TOKEN</value>
   </data>
+  <data name="ConnectionType" xml:space="preserve">
+    <value>连接类型</value>
+  </data>
+  <data name="ConnectionTypeXiaozhi" xml:space="preserve">
+    <value>小智 AI</value>
+  </data>
+  <data name="ConnectionTypeTuya" xml:space="preserve">
+    <value>涂鸦 IoT</value>
+  </data>
+  <data name="TuyaEndpoint" xml:space="preserve">
+    <value>涂鸦 API 端点</value>
+  </data>
+  <data name="TuyaEndpointRequired" xml:space="preserve">
+    <value>涂鸦 API 端点为必填项</value>
+  </data>
+  <data name="TuyaEndpointExample" xml:space="preserve">
+    <value>例如：https://openapi.tuyaeu.com</value>
+  </data>
+  <data name="TuyaAccessId" xml:space="preserve">
+    <value>涂鸦 Access ID</value>
+  </data>
+  <data name="TuyaAccessIdRequired" xml:space="preserve">
+    <value>涂鸦 Access ID 为必填项</value>
+  </data>
+  <data name="TuyaAccessSecret" xml:space="preserve">
+    <value>涂鸦 Access Secret</value>
+  </data>
+  <data name="TuyaAccessSecretRequired" xml:space="preserve">
+    <value>涂鸦 Access Secret 为必填项</value>
+  </data>
+  <data name="TuyaAccessSecretEditHint" xml:space="preserve">
+    <value>留空表示保留现有密钥</value>
+  </data>
   <data name="DescriptionOptional" xml:space="preserve">
     <value>此小智连接的可选描述</value>
   </data>

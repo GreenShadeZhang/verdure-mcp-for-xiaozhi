@@ -46,14 +46,58 @@
                                  Margin="Margin.Dense"
                                  Class="mb-4" />
 
-                    <MudTextField @bind-Value="_model.Address" 
-                                 Label="@Loc["XiaozhiWebSocketEndpoint"]" 
-                                 Required="true"
-                                 RequiredError="@Loc["XiaozhiWebSocketEndpointRequired"]"
-                                 Variant="Variant.Outlined"
-                                 Margin="Margin.Dense"
-                                 HelperText="@Loc["WebSocketEndpointExample"]"
-                                 Class="mb-4" />
+                    <!-- Connection type selector -->
+                    <MudSelect @bind-Value="_model.ConnectionType"
+                               Label="@Loc["ConnectionType"]"
+                               Variant="Variant.Outlined"
+                               Margin="Margin.Dense"
+                               Class="mb-4">
+                        <MudSelectItem Value="@("xiaozhi")">@Loc["ConnectionTypeXiaozhi"]</MudSelectItem>
+                        <MudSelectItem Value="@("tuya")">@Loc["ConnectionTypeTuya"]</MudSelectItem>
+                    </MudSelect>
+
+                    @if (_model.ConnectionType == "tuya")
+                    {
+                        <!-- Tuya fields -->
+                        <MudTextField @bind-Value="_model.Address"
+                                     Label="@Loc["TuyaEndpoint"]"
+                                     Required="true"
+                                     RequiredError="@Loc["TuyaEndpointRequired"]"
+                                     Variant="Variant.Outlined"
+                                     Margin="Margin.Dense"
+                                     HelperText="@Loc["TuyaEndpointExample"]"
+                                     Class="mb-4" />
+
+                        <MudTextField @bind-Value="_model.TuyaAccessId"
+                                     Label="@Loc["TuyaAccessId"]"
+                                     Required="true"
+                                     RequiredError="@Loc["TuyaAccessIdRequired"]"
+                                     Variant="Variant.Outlined"
+                                     Margin="Margin.Dense"
+                                     Class="mb-4" />
+
+                        <MudTextField @bind-Value="_model.TuyaAccessSecret"
+                                     Label="@Loc["TuyaAccessSecret"]"
+                                     Required="@(!_isEdit)"
+                                     RequiredError="@Loc["TuyaAccessSecretRequired"]"
+                                     Variant="Variant.Outlined"
+                                     Margin="Margin.Dense"
+                                     InputType="InputType.Password"
+                                     HelperText="@(_isEdit ? Loc["TuyaAccessSecretEditHint"] : null)"
+                                     Class="mb-4" />
+                    }
+                    else
+                    {
+                        <!-- Xiaozhi WebSocket endpoint -->
+                        <MudTextField @bind-Value="_model.Address" 
+                                     Label="@Loc["XiaozhiWebSocketEndpoint"]" 
+                                     Required="true"
+                                     RequiredError="@Loc["XiaozhiWebSocketEndpointRequired"]"
+                                     Variant="Variant.Outlined"
+                                     Margin="Margin.Dense"
+                                     HelperText="@Loc["WebSocketEndpointExample"]"
+                                     Class="mb-4" />
+                    }
 
                     <MudTextField @bind-Value="_model.Description" 
                                  Label="@Loc["Description"]" 
@@ -153,6 +197,10 @@
                 _model.Name = _existingServer.Name;
                 _model.Address = _existingServer.Address;
                 _model.Description = _existingServer.Description ?? string.Empty;
+                _model.ConnectionType = _existingServer.ConnectionType ?? "xiaozhi";
+                _model.TuyaAccessId = _existingServer.TuyaAccessId ?? string.Empty;
+                // TuyaAccessSecret is not returned by the API for security reasons;
+                // leave it blank and only send it if the user fills it in.
             }
             else
             {
@@ -182,7 +230,10 @@
                 {
                     Name = _model.Name,
                     Address = _model.Address,
-                    Description = _model.Description
+                    Description = _model.Description,
+                    ConnectionType = _model.ConnectionType,
+                    TuyaAccessId = string.IsNullOrWhiteSpace(_model.TuyaAccessId) ? null : _model.TuyaAccessId,
+                    TuyaAccessSecret = string.IsNullOrWhiteSpace(_model.TuyaAccessSecret) ? null : _model.TuyaAccessSecret,
                 };
                 await ServerService.UpdateServerAsync(Id!, request);
                 Snackbar.Add("Connection updated successfully", Severity.Success);
@@ -193,7 +244,10 @@
                 {
                     Name = _model.Name,
                     Address = _model.Address,
-                    Description = _model.Description
+                    Description = _model.Description,
+                    ConnectionType = _model.ConnectionType,
+                    TuyaAccessId = string.IsNullOrWhiteSpace(_model.TuyaAccessId) ? null : _model.TuyaAccessId,
+                    TuyaAccessSecret = string.IsNullOrWhiteSpace(_model.TuyaAccessSecret) ? null : _model.TuyaAccessSecret,
                 };
                 await ServerService.CreateServerAsync(request);
                 Snackbar.Add("Connection created successfully", Severity.Success);
@@ -221,5 +275,8 @@
         public string Name { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
+        public string ConnectionType { get; set; } = "xiaozhi";
+        public string TuyaAccessId { get; set; } = string.Empty;
+        public string TuyaAccessSecret { get; set; } = string.Empty;
     }
 }
