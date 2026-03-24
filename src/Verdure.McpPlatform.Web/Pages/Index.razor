@@ -123,8 +123,52 @@
         </MudContainer>
         </div>
 
+        <!-- Supported Connections Section -->
+        <div id="supported-connections" Style="padding: 80px 0; background: var(--m3-background);">
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge">
+            <MudText Typo="Typo.h4" Align="Align.Center" Class="mb-3" Style="font-weight: 500;">
+                @Loc["SupportedConnections"]
+            </MudText>
+            <MudText Typo="Typo.body1" Align="Align.Center" Class="mb-8" Color="Color.Secondary">
+                @Loc["SupportedConnectionsDescription"]
+            </MudText>
+            <MudGrid Justify="Justify.Center">
+                <MudItem xs="12" sm="6" md="4">
+                    <MudCard Elevation="3" Class="pa-6" Style="height: 100%; border-top: 4px solid var(--m3-primary);">
+                        <MudCardContent Class="text-center">
+                            <MudIcon Icon="@Icons.Material.Filled.SmartToy"
+                                    Size="Size.Large"
+                                    Color="Color.Primary"
+                                    Class="mb-4" />
+                            <MudText Typo="Typo.h6" Class="mb-2">@Loc["ConnectionTypeXiaozhi"]</MudText>
+                            <MudChip T="string" Color="Color.Primary" Size="Size.Small" Class="mb-3">WebSocket</MudChip>
+                            <MudText Typo="Typo.body2" Color="Color.Secondary">
+                                @Loc["ConnectionTypeXiaozhiDesc"]
+                            </MudText>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+                <MudItem xs="12" sm="6" md="4">
+                    <MudCard Elevation="3" Class="pa-6" Style="height: 100%; border-top: 4px solid var(--m3-secondary);">
+                        <MudCardContent Class="text-center">
+                            <MudIcon Icon="@Icons.Material.Filled.DeviceHub"
+                                    Size="Size.Large"
+                                    Color="Color.Secondary"
+                                    Class="mb-4" />
+                            <MudText Typo="Typo.h6" Class="mb-2">@Loc["ConnectionTypeTuya"]</MudText>
+                            <MudChip T="string" Color="Color.Secondary" Size="Size.Small" Class="mb-3">WebSocket</MudChip>
+                            <MudText Typo="Typo.body2" Color="Color.Secondary">
+                                @Loc["ConnectionTypeTuyaDesc"]
+                            </MudText>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+            </MudGrid>
+        </MudContainer>
+        </div>
+
         <!-- Architecture Section -->
-        <div id="architecture" Style="padding: 80px 0; background: var(--m3-background);">
+        <div id="architecture" Style="padding: 80px 0; background: var(--m3-surface);">
         <MudContainer MaxWidth="MaxWidth.ExtraLarge">
             <MudText Typo="Typo.h4" Align="Align.Center" Class="mb-8" Style="font-weight: 500;">
                 @Loc["ArchitectureDesign"]
