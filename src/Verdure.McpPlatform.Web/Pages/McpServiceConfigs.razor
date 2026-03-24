@@ -458,7 +458,7 @@
 
     private async Task DeleteService(McpServiceConfigDto service)
     {
-        bool? confirm = await DialogService.ShowMessageBox(
+        bool? confirm = await DialogService.ShowMessageBoxAsync(
             Loc["ConfirmDelete"],
             Loc["ConfirmDeleteMcpService", service.Name],
             yesText: Loc["Delete"],
@@ -485,7 +485,7 @@
 
     private async Task SetPublic(McpServiceConfigDto service)
     {
-        bool? confirm = await DialogService.ShowMessageBox(
+        bool? confirm = await DialogService.ShowMessageBoxAsync(
             Loc["ConfirmSetPublic"],
             Loc["ConfirmSetPublicMessage", service.Name],
             yesText: Loc["Confirm"],
@@ -512,7 +512,7 @@
 
     private async Task SetPrivate(McpServiceConfigDto service)
     {
-        bool? confirm = await DialogService.ShowMessageBox(
+        bool? confirm = await DialogService.ShowMessageBoxAsync(
             Loc["ConfirmSetPrivate"],
             Loc["ConfirmSetPrivateMessage", service.Name],
             yesText: Loc["Confirm"],

@@ -466,7 +466,7 @@
 
     private async Task DeleteBinding(McpServiceBindingDto binding)
     {
-        bool? confirm = await DialogService.ShowMessageBox(
+        bool? confirm = await DialogService.ShowMessageBoxAsync(
             Loc["ConfirmDelete"],
             Loc["ConfirmDeleteService", binding.ServiceName],
             yesText: Loc["Delete"],

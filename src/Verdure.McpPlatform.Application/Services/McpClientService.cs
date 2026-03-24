@@ -118,7 +118,6 @@ public class McpClientService : IMcpClientService
         {
             Endpoint = endpointUri,
             Name = name,
-            OmitContentTypeCharset = true, // Remove charset to avoid issues with some servers
         };
 
         // Determine transport mode based on protocol

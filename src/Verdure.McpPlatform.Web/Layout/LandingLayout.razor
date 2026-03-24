@@ -94,10 +94,11 @@
                                  AnchorOrigin="Origin.BottomRight" 
                                  TransformOrigin="Origin.TopRight"
                                  Style="color: var(--m3-on-surface-variant);">
-                            <ActivatorContent>
+                            <ActivatorContent Context="menuContext">
                                 <MudIconButton Icon="@Icons.Material.Filled.AccountCircle" 
                                               Size="Size.Medium"
-                                              Style="color: var(--m3-on-surface-variant);" />
+                                              Style="color: var(--m3-on-surface-variant);"
+                                              OnClick="@menuContext.ToggleAsync" />
                             </ActivatorContent>
                             <ChildContent>
                                 <MudMenuItem>
