@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Authentication;
 using Verdure.McpPlatform.Api.Services;
 using Verdure.McpPlatform.Application.Services;
 using Verdure.McpPlatform.Contracts.DTOs;
@@ -222,6 +223,14 @@ public static class McpServiceConfigApi
         {
             return TypedResults.NotFound();
         }
+        catch (AuthenticationException ex)
+        {
+            return TypedResults.Problem(ex.Message, statusCode: StatusCodes.Status400BadRequest, title: "MCP Service Authentication Failed");
+        }
+        catch (TimeoutException ex)
+        {
+            return TypedResults.Problem(ex.Message, statusCode: StatusCodes.Status504GatewayTimeout, title: "Sync Timeout");
+        }
         catch (NotImplementedException ex)
         {
             return TypedResults.Problem(ex.Message, statusCode: StatusCodes.Status501NotImplemented);
@@ -293,6 +302,14 @@ public static class McpServiceConfigApi
         catch (InvalidOperationException)
         {
             return TypedResults.NotFound();
+        }
+        catch (AuthenticationException ex)
+        {
+            return TypedResults.Problem(ex.Message, statusCode: StatusCodes.Status400BadRequest, title: "MCP Service Authentication Failed");
+        }
+        catch (TimeoutException ex)
+        {
+            return TypedResults.Problem(ex.Message, statusCode: StatusCodes.Status504GatewayTimeout, title: "Sync Timeout");
         }
         catch (NotImplementedException ex)
         {

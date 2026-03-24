@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using ModelContextProtocol.Client;
 using ModelContextProtocol.Protocol;
+using System.Net;
+using System.Security.Authentication;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -324,6 +326,25 @@ public class McpClientService : IMcpClientService
                 config.Name);
 
             return tools;
+        }
+        catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            _logger.LogError(
+                ex,
+                "Authentication failed for MCP service {ServiceName}: {Message}",
+                config.Name, ex.Message);
+            throw new AuthenticationException(
+                $"MCP service '{config.Name}' authentication failed. Please check your credentials.", ex);
+        }
+        catch (TaskCanceledException ex) when (!ex.CancellationToken.IsCancellationRequested)
+        {
+            // HttpClient.Timeout elapsed — not user-initiated cancellation
+            _logger.LogError(
+                ex,
+                "Timeout connecting to MCP service {ServiceName}",
+                config.Name);
+            throw new TimeoutException(
+                $"MCP service '{config.Name}' sync timed out. The service may be slow or unavailable.", ex);
         }
         catch (Exception ex)
         {
