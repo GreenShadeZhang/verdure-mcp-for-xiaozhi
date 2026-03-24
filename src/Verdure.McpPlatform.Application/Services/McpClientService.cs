@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using ModelContextProtocol.Client;
+using ModelContextProtocol.Protocol;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -190,14 +191,14 @@ public class McpClientService : IMcpClientService
             transportOptions.AdditionalHeaders = headers;
         }
 
-        // 🔧 Create HttpClient with minimal configuration
-        // SDK manages SSE connection lifetime via stream, not connection pooling
-        // We set request timeout for fast failure on unresponsive tools.
+        // 🔧 Create HttpClient with RemoveCharsetDelegatingHandler to strip the
+        // 'charset=utf-8' that the SDK appends to 'Content-Type: application/json'.
+        // Many non-C# MCP servers do strict header matching and reject the charset suffix.
+        // Individual request timeout prevents blocking on unresponsive tools.
         // Timeout value is read from configuration key 'McpClient:ToolRequestTimeoutSeconds'
         // and defaults to 5 seconds when not configured.
-        var httpClient = new HttpClient()
+        var httpClient = new HttpClient(new RemoveCharsetDelegatingHandler())
         {
-            // Individual request timeout (not connection lifetime)
             Timeout = _toolRequestTimeout
         };
 
@@ -284,22 +285,36 @@ public class McpClientService : IMcpClientService
             // Use the unified CreateMcpClientAsync method
             client = await CreateMcpClientAsync(config);
 
-            // List available tools
-            var toolsResult = await client.ListToolsAsync();
+            // Use the low-level paged overload so we can guard against servers that
+            // return nextCursor="" (empty string) instead of null/omitted-field when
+            // there are no more pages.  The SDK's high-level ListToolsAsync overload
+            // only stops when cursor IS null, so an empty-string cursor causes an
+            // infinite loop against non-compliant servers.
+            var allToolResults = new List<Tool>();
+            var listParams = new ListToolsRequestParams();
+            do
+            {
+                var page = await client.ListToolsAsync(listParams);
+                allToolResults.AddRange(page.Tools);
+                // Treat "" the same as null – stop pagination
+                var next = page.NextCursor;
+                listParams.Cursor = string.IsNullOrEmpty(next) ? null : next;
+            }
+            while (listParams.Cursor is not null);
 
-            if (toolsResult == null || toolsResult.Count == 0)
+            if (allToolResults.Count == 0)
             {
                 _logger.LogWarning("No tools returned from MCP service {ServiceName}", config.Name);
                 return Enumerable.Empty<McpToolInfo>();
             }
 
-            var tools = toolsResult.Select(tool => new McpToolInfo
+            var tools = allToolResults.Select(tool => new McpToolInfo
             {
                 Name = tool.Name ?? "Unknown",
                 Description = tool.Description,
-                // Serialize the JsonSchema to string for storage
-                InputSchema = tool.JsonSchema.ValueKind != System.Text.Json.JsonValueKind.Undefined 
-                    ? JsonSerializer.Serialize(tool.JsonSchema, _jsonSerializerOptions)
+                // Serialize the InputSchema (JsonElement) to string for storage
+                InputSchema = tool.InputSchema.ValueKind != System.Text.Json.JsonValueKind.Undefined
+                    ? JsonSerializer.Serialize(tool.InputSchema, _jsonSerializerOptions)
                     : null
             }).ToList();
 
@@ -342,5 +357,27 @@ public class McpClientService : IMcpClientService
             config.Name);
 
         return await GetToolsViaHttpAsync(config);
+    }
+
+    /// <summary>
+    /// Removes the <c>charset=utf-8</c> parameter that the MCP SDK automatically appends
+    /// to the <c>Content-Type: application/json</c> header.  Some MCP servers written in
+    /// Python, Go, or other languages do strict media-type matching and reject the request
+    /// when they see <c>application/json; charset=utf-8</c> instead of plain
+    /// <c>application/json</c>.
+    /// </summary>
+    private sealed class RemoveCharsetDelegatingHandler() : DelegatingHandler(new HttpClientHandler())
+    {
+        protected override Task<HttpResponseMessage> SendAsync(
+            HttpRequestMessage request,
+            CancellationToken cancellationToken)
+        {
+            if (request.Content?.Headers?.ContentType is { CharSet: not null } contentType)
+            {
+                contentType.CharSet = null;
+            }
+
+            return base.SendAsync(request, cancellationToken);
+        }
     }
 }
