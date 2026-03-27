@@ -115,7 +115,7 @@
   
   <!-- Navigation -->
   <data name="XiaozhiMcpEndpoints" xml:space="preserve">
-    <value>Xiaozhi Connections</value>
+    <value>AI Connections</value>
   </data>
   <data name="McpBindings" xml:space="preserve">
     <value>MCP Bindings</value>
@@ -174,7 +174,7 @@
     <value>Quick Actions</value>
   </data>
   <data name="AddXiaozhiMcpEndpoint" xml:space="preserve">
-    <value>Add Xiaozhi Connection</value>
+    <value>Add AI Connection</value>
   </data>
   <data name="CreateBinding" xml:space="preserve">
     <value>Create Binding</value>
@@ -183,19 +183,19 @@
     <value>View All Connections</value>
   </data>
   <data name="RecentServers" xml:space="preserve">
-    <value>Recent Xiaozhi Connections</value>
+    <value>Recent AI Connections</value>
   </data>
   <data name="BindingsCount" xml:space="preserve">
     <value>{0} binding(s)</value>
   </data>
   <data name="NoServersYet" xml:space="preserve">
-    <value>No Xiaozhi connections yet. Create one to get started!</value>
+    <value>No AI connections yet. Create one to get started!</value>
   </data>
   <data name="WelcomeToPlatform" xml:space="preserve">
     <value>Welcome to Verdure MCP Platform</value>
   </data>
   <data name="PlatformDescription" xml:space="preserve">
-    <value>A powerful platform for managing MCP (Model Context Protocol) services with Xiaozhi AI integration.</value>
+    <value>A powerful platform for managing MCP (Model Context Protocol) services across multiple AI assistant integrations.</value>
   </data>
   <data name="LoginToGetStarted" xml:space="preserve">
     <value>Login to Get Started</value>
@@ -217,7 +217,7 @@
   
   <!-- Connections Page -->
   <data name="ManageConnections" xml:space="preserve">
-    <value>Manage your Xiaozhi AI server connections</value>
+    <value>Manage your AI service endpoint connections</value>
   </data>
   <data name="AddConnection" xml:space="preserve">
     <value>Add Connection</value>
@@ -250,7 +250,7 @@
     <value>View Services</value>
   </data>
   <data name="NoConnectionsYet" xml:space="preserve">
-    <value>No connections yet. Create your first Xiaozhi connection to get started!</value>
+    <value>No connections yet. Create your first AI connection to get started!</value>
   </data>
   <data name="DeleteConnection" xml:space="preserve">
     <value>Delete Connection</value>
@@ -393,7 +393,7 @@
     <value>About</value>
   </data>
   <data name="AboutVerdurePlatform" xml:space="preserve">
-    <value>Verdure MCP Platform is a powerful management platform for MCP (Model Context Protocol) services with Xiaozhi AI integration.</value>
+    <value>Verdure MCP Platform is a powerful management platform for MCP (Model Context Protocol) services supporting multiple AI assistant integrations.</value>
   </data>
   <data name="ConfigureKeycloakSettings" xml:space="preserve">
     <value>Configure your Keycloak settings in appsettings.json to enable full OIDC authentication.</value>
@@ -485,13 +485,13 @@
     <value>Create</value>
   </data>
   <data name="XiaozhiMcpEndpoint" xml:space="preserve">
-    <value>Xiaozhi Connection</value>
+    <value>AI Connection</value>
   </data>
   <data name="UpdateConnectionSettings" xml:space="preserve">
-    <value>Update your Xiaozhi AI server connection settings</value>
+    <value>Update your AI service endpoint connection settings</value>
   </data>
   <data name="AddNewConnection" xml:space="preserve">
-    <value>Add a new Xiaozhi AI server connection to your platform</value>
+    <value>Add a new AI service endpoint connection to your platform</value>
   </data>
   <data name="ConnectionName" xml:space="preserve">
     <value>Connection Name</value>
@@ -500,16 +500,49 @@
     <value>Connection Name is required</value>
   </data>
   <data name="XiaozhiWebSocketEndpoint" xml:space="preserve">
-    <value>Xiaozhi WebSocket Endpoint</value>
+    <value>WebSocket Endpoint Address</value>
   </data>
   <data name="XiaozhiWebSocketEndpointRequired" xml:space="preserve">
-    <value>Xiaozhi WebSocket Endpoint is required</value>
+    <value>WebSocket Endpoint Address is required</value>
   </data>
   <data name="WebSocketEndpointExample" xml:space="preserve">
     <value>e.g., wss://api.xiaozhi.me/mcp/?token=YOUR_TOKEN</value>
   </data>
+  <data name="ConnectionType" xml:space="preserve">
+    <value>Connection Type</value>
+  </data>
+  <data name="ConnectionTypeXiaozhi" xml:space="preserve">
+    <value>Xiaozhi AI</value>
+  </data>
+  <data name="ConnectionTypeTuya" xml:space="preserve">
+    <value>Tuya IoT</value>
+  </data>
+  <data name="TuyaEndpoint" xml:space="preserve">
+    <value>Tuya API Endpoint</value>
+  </data>
+  <data name="TuyaEndpointRequired" xml:space="preserve">
+    <value>Tuya API Endpoint is required</value>
+  </data>
+  <data name="TuyaEndpointExample" xml:space="preserve">
+    <value>e.g., https://openapi.tuyaeu.com</value>
+  </data>
+  <data name="TuyaAccessId" xml:space="preserve">
+    <value>Tuya Access ID</value>
+  </data>
+  <data name="TuyaAccessIdRequired" xml:space="preserve">
+    <value>Tuya Access ID is required</value>
+  </data>
+  <data name="TuyaAccessSecret" xml:space="preserve">
+    <value>Tuya Access Secret</value>
+  </data>
+  <data name="TuyaAccessSecretRequired" xml:space="preserve">
+    <value>Tuya Access Secret is required</value>
+  </data>
+  <data name="TuyaAccessSecretEditHint" xml:space="preserve">
+    <value>Leave blank to keep existing secret</value>
+  </data>
   <data name="DescriptionOptional" xml:space="preserve">
-    <value>Optional description for this Xiaozhi connection</value>
+    <value>Optional description for this AI connection</value>
   </data>
   <data name="Saving" xml:space="preserve">
     <value>Saving...</value>
@@ -562,7 +595,7 @@
     <value>Configure a new external MCP service binding for your connection</value>
   </data>
   <data name="SelectXiaozhiMcpEndpoint" xml:space="preserve">
-    <value>Please select a Xiaozhi connection</value>
+    <value>Please select an AI connection</value>
   </data>
   <data name="ServiceNameRequired" xml:space="preserve">
     <value>Service name is required</value>
@@ -609,7 +642,7 @@
     <value>Try adjusting your search criteria</value>
   </data>
   <data name="GetStartedCreateConnection" xml:space="preserve">
-    <value>Get started by creating your first Xiaozhi connection</value>
+    <value>Get started by creating your first AI connection</value>
   </data>
   <data name="CreateConnectionButton" xml:space="preserve">
     <value>Create Connection</value>
@@ -945,7 +978,19 @@
     <value>Open-source Multi-tenant MCP Service Management Platform</value>
   </data>
   <data name="LandingPageSubtitle" xml:space="preserve">
-    <value>Built with .NET 10 and Blazor WebAssembly, providing flexible Model Context Protocol service configuration and management capabilities for Xiaozhi AI Assistant</value>
+    <value>Built with .NET 10 and Blazor WebAssembly, providing flexible Model Context Protocol service configuration and management capabilities for multiple AI assistants</value>
+  </data>
+  <data name="SupportedConnections" xml:space="preserve">
+    <value>Supported Connection Types</value>
+  </data>
+  <data name="SupportedConnectionsDescription" xml:space="preserve">
+    <value>An AI Connection is a real-time WebSocket channel between an AI assistant and the platform. Once MCP service tools are bound to a connection endpoint, the AI assistant can invoke those tools directly. Currently supported:</value>
+  </data>
+  <data name="ConnectionTypeXiaozhiDesc" xml:space="preserve">
+    <value>An open-source AI voice/text assistant terminal. After binding MCP service tools, Xiaozhi AI gains capabilities such as web search, automation, and knowledge retrieval.</value>
+  </data>
+  <data name="ConnectionTypeTuyaDesc" xml:space="preserve">
+    <value>A smart IoT platform using WebSocket endpoints. After binding MCP service tools, AI can directly query device status and control smart home appliances in the Tuya ecosystem.</value>
   </data>
   <data name="EnterDashboard" xml:space="preserve">
     <value>Enter Console</value>
@@ -963,13 +1008,13 @@
     <value>Multi-tenant Support</value>
   </data>
   <data name="MultiTenantDescription" xml:space="preserve">
-    <value>Based on Keycloak OpenID Connect authentication, each user can independently configure their own MCP services and Xiaozhi connections</value>
+    <value>Based on Keycloak OpenID Connect authentication, each user can independently configure their own MCP services and AI connections</value>
   </data>
   <data name="FlexibleServiceBinding" xml:space="preserve">
     <value>Flexible Service Binding</value>
   </data>
   <data name="FlexibleServiceBindingDescription" xml:space="preserve">
-    <value>Bind different MCP services to specified Xiaozhi nodes, supporting multiple authentication methods and configuration modes</value>
+    <value>Bind different MCP services to specified AI connection nodes, supporting multiple authentication methods and configuration modes</value>
   </data>
   <data name="ModernTechStack" xml:space="preserve">
     <value>Modern Tech Stack</value>
@@ -1020,10 +1065,10 @@
     <value>Login to the platform using your Keycloak account</value>
   </data>
   <data name="Step2ConfigureXiaozhi" xml:space="preserve">
-    <value>2. Configure Xiaozhi Connection</value>
+    <value>2. Configure AI Connection</value>
   </data>
   <data name="Step2ConfigureXiaozhiDescription" xml:space="preserve">
-    <value>Add your Xiaozhi AI server address</value>
+    <value>Add your AI service endpoint address</value>
   </data>
   <data name="Step3CreateMcpService" xml:space="preserve">
     <value>3. Create MCP Service</value>
@@ -1035,7 +1080,7 @@
     <value>4. Bind Service to Node</value>
   </data>
   <data name="Step4BindServiceDescription" xml:space="preserve">
-    <value>Bind MCP service to Xiaozhi node and start using</value>
+    <value>Bind MCP service to AI connection node and start using</value>
   </data>
   
   <!-- Landing Layout - Navigation -->
@@ -1141,7 +1186,7 @@
     <value>No service bindings yet</value>
   </data>
   <data name="CreateFirstBinding" xml:space="preserve">
-    <value>Create your first service binding to connect Xiaozhi endpoints with MCP services</value>
+    <value>Create your first service binding to connect AI endpoints with MCP services</value>
   </data>
   <data name="NoMatchingBindings" xml:space="preserve">
     <value>No bindings found matching "{0}"</value>
@@ -1171,10 +1216,10 @@
     <value>{0} tools selected</value>
   </data>
   <data name="ChooseXiaozhiConnection" xml:space="preserve">
-    <value>Choose Xiaozhi Connection</value>
+    <value>Choose AI Connection</value>
   </data>
   <data name="SelectConnectionHelp" xml:space="preserve">
-    <value>Select the Xiaozhi connection endpoint to bind the MCP service to</value>
+    <value>Select the AI connection endpoint to bind the MCP service to</value>
   </data>
   <data name="ChooseMcpService" xml:space="preserve">
     <value>Choose MCP Service</value>
@@ -1228,7 +1273,7 @@
     <value>Selected Service</value>
   </data>
   <data name="NowSelectConnectionAndTools" xml:space="preserve">
-    <value>Now select a Xiaozhi connection and configure tools</value>
+    <value>Now select an AI connection and configure tools</value>
   </data>
   <data name="UseThisService" xml:space="preserve">
     <value>Use This Service</value>

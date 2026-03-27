@@ -354,7 +354,7 @@
 
     private async Task HandleDelete(XiaozhiMcpEndpointDto server)
     {
-        bool? confirm = await DialogService.ShowMessageBox(
+        bool? confirm = await DialogService.ShowMessageBoxAsync(
             Loc["DeleteConnection"],
             Loc["DeleteConnectionConfirm", server.Name],
             yesText: Loc["Delete"],

@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using System.Text.Json;
 using Verdure.McpPlatform.Contracts.DTOs;
 using Verdure.McpPlatform.Contracts.Models;
 using Verdure.McpPlatform.Contracts.Requests;
@@ -176,15 +177,12 @@ public class McpServiceConfigClientService : IMcpServiceConfigClientService
 
     public async Task SyncToolsAsync(string id)
     {
-        try
+        var response = await _httpClient.PostAsync($"api/mcp-services/{id}/sync-tools", null);
+        if (!response.IsSuccessStatusCode)
         {
-            var response = await _httpClient.PostAsync($"api/mcp-services/{id}/sync-tools", null);
-            response.EnsureSuccessStatusCode();
-        }
-        catch (HttpRequestException ex)
-        {
-            _logger.LogError(ex, "Failed to sync tools for MCP service {ServiceId}", id);
-            throw;
+            var message = await ExtractProblemDetailMessageAsync(response);
+            _logger.LogError("Failed to sync tools for MCP service {ServiceId}: {Message}", id, message);
+            throw new HttpRequestException(message, null, response.StatusCode);
         }
     }
 
@@ -260,15 +258,28 @@ public class McpServiceConfigClientService : IMcpServiceConfigClientService
 
     public async Task AdminSyncToolsAsync(string id)
     {
+        var response = await _httpClient.PostAsync($"api/mcp-services/{id}/admin-sync-tools", null);
+        if (!response.IsSuccessStatusCode)
+        {
+            var message = await ExtractProblemDetailMessageAsync(response);
+            _logger.LogError("Failed to admin sync tools for MCP service {ServiceId}: {Message}", id, message);
+            throw new HttpRequestException(message, null, response.StatusCode);
+        }
+    }
+
+    private static async Task<string> ExtractProblemDetailMessageAsync(HttpResponseMessage response)
+    {
         try
         {
-            var response = await _httpClient.PostAsync($"api/mcp-services/{id}/admin-sync-tools", null);
-            response.EnsureSuccessStatusCode();
+            var json = await response.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(json);
+            var root = doc.RootElement;
+            if (root.TryGetProperty("detail", out var detail) && detail.ValueKind == JsonValueKind.String)
+                return detail.GetString()!;
+            if (root.TryGetProperty("title", out var title) && title.ValueKind == JsonValueKind.String)
+                return title.GetString()!;
         }
-        catch (HttpRequestException ex)
-        {
-            _logger.LogError(ex, "Failed to admin sync tools for MCP service {ServiceId}", id);
-            throw;
-        }
+        catch { }
+        return $"{(int)response.StatusCode} {response.ReasonPhrase}";
     }
 }

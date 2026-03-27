@@ -19,4 +19,10 @@ public record XiaozhiMcpEndpointDto
     public DateTime? LastConnectedAt { get; init; }
     public DateTime? LastDisconnectedAt { get; init; }
     public List<McpServiceBindingDto> ServiceBindings { get; init; } = new();
+
+    /// <summary>Connection type: "xiaozhi" (default) or "tuya".</summary>
+    public string ConnectionType { get; init; } = "xiaozhi";
+
+    /// <summary>Tuya Access ID. Only relevant when ConnectionType is "tuya".</summary>
+    public string? TuyaAccessId { get; init; }
 }

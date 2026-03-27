@@ -16,8 +16,7 @@ public static class VersionApi
     public static RouteGroupBuilder MapVersionApi(this IEndpointRouteBuilder app)
     {
         var api = app.MapGroup("api/version")
-            .WithTags("Version")
-            .WithOpenApi();
+            .WithTags("Version");
 
         api.MapGet("/", GetVersionInfo)
             .WithName("GetVersionInfo")

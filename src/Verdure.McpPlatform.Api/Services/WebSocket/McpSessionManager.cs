@@ -21,7 +21,7 @@ public class McpSessionManager : IAsyncDisposable
     private readonly IConnectionStateService _connectionStateService;
     private readonly ReconnectionSettings _reconnectionSettings;
     
-    private readonly ConcurrentDictionary<string, McpSessionService> _sessions = new();
+    private readonly ConcurrentDictionary<string, ISessionService> _sessions = new();
     private readonly SemaphoreSlim _sessionLock = new(1, 1);
     
     public McpSessionManager(
@@ -189,16 +189,34 @@ public class McpSessionManager : IAsyncDisposable
                 ServerName = server.Name,
                 WebSocketEndpoint = server.Address,
                 UserId = server.UserId,
-                McpServices = mcpServiceEndpoints
+                McpServices = mcpServiceEndpoints,
+                ConnectionType = server.ConnectionType,
+                TuyaEndpoint = server.Address,
+                TuyaAccessId = server.TuyaAccessId,
+                TuyaAccessSecret = server.TuyaAccessSecret,
             };
 
-            // Create new session (McpSessionService will use IServiceScopeFactory to get IUserInfoService)
-            var session = new McpSessionService(
-                config,
-                _reconnectionSettings,
-                mcpClientService,
-                _serviceScopeFactory,
-                _loggerFactory);
+            // Create the appropriate session based on connection type
+            ISessionService session;
+            if (string.Equals(server.ConnectionType, "tuya", StringComparison.OrdinalIgnoreCase))
+            {
+                session = new TuyaMcpSessionService(
+                    config,
+                    _reconnectionSettings,
+                    mcpClientService,
+                    _serviceScopeFactory,
+                    _loggerFactory);
+            }
+            else
+            {
+                // Default: Xiaozhi session
+                session = new McpSessionService(
+                    config,
+                    _reconnectionSettings,
+                    mcpClientService,
+                    _serviceScopeFactory,
+                    _loggerFactory);
+            }
 
             // Subscribe to connection events
             session.OnConnected += async () =>
@@ -471,7 +489,7 @@ public class McpSessionManager : IAsyncDisposable
     /// <summary>
     /// Get a specific session
     /// </summary>
-    public McpSessionService? GetSession(string serverId)
+    public ISessionService? GetSession(string serverId)
     {
         _sessions.TryGetValue(serverId, out var session);
         return session;
@@ -488,7 +506,7 @@ public class McpSessionManager : IAsyncDisposable
     /// <summary>
     /// Get all active sessions
     /// </summary>
-    public IReadOnlyDictionary<string, McpSessionService> GetAllSessions()
+    public IReadOnlyDictionary<string, ISessionService> GetAllSessions()
     {
         return _sessions;
     }

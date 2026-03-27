@@ -44,6 +44,17 @@ public class XiaozhiMcpEndpointEntityTypeConfiguration : IEntityTypeConfiguratio
         builder.Property(s => s.CreatedAt)
             .IsRequired();
 
+        builder.Property(s => s.ConnectionType)
+            .HasMaxLength(20)
+            .IsRequired()
+            .HasDefaultValue("xiaozhi");
+
+        builder.Property(s => s.TuyaAccessId)
+            .HasMaxLength(200);
+
+        builder.Property(s => s.TuyaAccessSecret)
+            .HasMaxLength(200);
+
         builder.HasIndex(s => s.UserId);
         builder.HasIndex(s => s.IsEnabled);
 

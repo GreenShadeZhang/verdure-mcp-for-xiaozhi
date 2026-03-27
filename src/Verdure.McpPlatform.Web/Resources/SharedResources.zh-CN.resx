@@ -115,7 +115,7 @@
   
   <!-- Navigation -->
   <data name="XiaozhiMcpEndpoints" xml:space="preserve">
-    <value>小智连接</value>
+    <value>AI 连接</value>
   </data>
   <data name="McpBindings" xml:space="preserve">
     <value>MCP 绑定</value>
@@ -188,7 +188,7 @@
     <value>快速操作</value>
   </data>
   <data name="AddXiaozhiMcpEndpoint" xml:space="preserve">
-    <value>添加小智连接</value>
+    <value>添加 AI 连接</value>
   </data>
   <data name="CreateBinding" xml:space="preserve">
     <value>创建绑定</value>
@@ -197,19 +197,19 @@
     <value>查看所有连接</value>
   </data>
   <data name="RecentServers" xml:space="preserve">
-    <value>最近的小智连接</value>
+    <value>最近的 AI 连接</value>
   </data>
   <data name="BindingsCount" xml:space="preserve">
     <value>{0} 个绑定</value>
   </data>
   <data name="NoServersYet" xml:space="preserve">
-    <value>暂无小智连接。立即创建一个开始使用！</value>
+    <value>暂无 AI 连接。立即创建一个开始使用！</value>
   </data>
   <data name="WelcomeToPlatform" xml:space="preserve">
     <value>欢迎使用 Verdure MCP 平台</value>
   </data>
   <data name="PlatformDescription" xml:space="preserve">
-    <value>一个功能强大的平台，用于管理 MCP（模型上下文协议）服务与小智 AI 集成。</value>
+    <value>一个功能强大的平台，用于管理 MCP（模型上下文协议）服务，支持多种 AI 助手集成。</value>
   </data>
   <data name="LoginToGetStarted" xml:space="preserve">
     <value>登录以开始使用</value>
@@ -231,7 +231,7 @@
   
   <!-- Connections Page -->
   <data name="ManageConnections" xml:space="preserve">
-    <value>管理您的小智 AI 服务器连接</value>
+    <value>管理您的 AI 服务端点连接</value>
   </data>
   <data name="AddConnection" xml:space="preserve">
     <value>添加连接</value>
@@ -264,7 +264,7 @@
     <value>查看服务</value>
   </data>
   <data name="NoConnectionsYet" xml:space="preserve">
-    <value>暂无连接。创建您的第一个小智连接以开始使用！</value>
+    <value>暂无连接。创建您的第一个 AI 连接以开始使用！</value>
   </data>
   <data name="DeleteConnection" xml:space="preserve">
     <value>删除连接</value>
@@ -407,7 +407,7 @@
     <value>关于</value>
   </data>
   <data name="AboutVerdurePlatform" xml:space="preserve">
-    <value>Verdure MCP 平台是一个强大的管理平台，用于管理 MCP（模型上下文协议）服务与小智 AI 集成。</value>
+    <value>Verdure MCP 平台是一个强大的管理平台，用于管理 MCP（模型上下文协议）服务，支持多种 AI 助手集成。</value>
   </data>
   <data name="ConfigureKeycloakSettings" xml:space="preserve">
     <value>在 appsettings.json 中配置您的 Keycloak 设置以启用完整的 OIDC 身份验证。</value>
@@ -499,13 +499,13 @@
     <value>创建</value>
   </data>
   <data name="XiaozhiMcpEndpoint" xml:space="preserve">
-    <value>小智连接</value>
+    <value>AI 连接</value>
   </data>
   <data name="UpdateConnectionSettings" xml:space="preserve">
-    <value>更新您的小智 AI 服务器连接设置</value>
+    <value>更新连接的端点配置</value>
   </data>
   <data name="AddNewConnection" xml:space="preserve">
-    <value>向您的平台添加新的小智 AI 服务器连接</value>
+    <value>向您的平台添加新的 AI 服务端点连接</value>
   </data>
   <data name="ConnectionName" xml:space="preserve">
     <value>连接名称</value>
@@ -514,16 +514,49 @@
     <value>连接名称为必填项</value>
   </data>
   <data name="XiaozhiWebSocketEndpoint" xml:space="preserve">
-    <value>小智 WebSocket 端点</value>
+    <value>WebSocket 端点地址</value>
   </data>
   <data name="XiaozhiWebSocketEndpointRequired" xml:space="preserve">
-    <value>小智 WebSocket 端点为必填项</value>
+    <value>WebSocket 端点地址为必填项</value>
   </data>
   <data name="WebSocketEndpointExample" xml:space="preserve">
     <value>例如：wss://api.xiaozhi.me/mcp/?token=YOUR_TOKEN</value>
   </data>
+  <data name="ConnectionType" xml:space="preserve">
+    <value>连接类型</value>
+  </data>
+  <data name="ConnectionTypeXiaozhi" xml:space="preserve">
+    <value>小智 AI</value>
+  </data>
+  <data name="ConnectionTypeTuya" xml:space="preserve">
+    <value>涂鸦 IoT</value>
+  </data>
+  <data name="TuyaEndpoint" xml:space="preserve">
+    <value>涂鸦 API 端点</value>
+  </data>
+  <data name="TuyaEndpointRequired" xml:space="preserve">
+    <value>涂鸦 API 端点为必填项</value>
+  </data>
+  <data name="TuyaEndpointExample" xml:space="preserve">
+    <value>例如：https://openapi.tuyaeu.com</value>
+  </data>
+  <data name="TuyaAccessId" xml:space="preserve">
+    <value>涂鸦 Access ID</value>
+  </data>
+  <data name="TuyaAccessIdRequired" xml:space="preserve">
+    <value>涂鸦 Access ID 为必填项</value>
+  </data>
+  <data name="TuyaAccessSecret" xml:space="preserve">
+    <value>涂鸦 Access Secret</value>
+  </data>
+  <data name="TuyaAccessSecretRequired" xml:space="preserve">
+    <value>涂鸦 Access Secret 为必填项</value>
+  </data>
+  <data name="TuyaAccessSecretEditHint" xml:space="preserve">
+    <value>留空表示保留现有密钥</value>
+  </data>
   <data name="DescriptionOptional" xml:space="preserve">
-    <value>此小智连接的可选描述</value>
+    <value>此连接的可选描述</value>
   </data>
   <data name="Saving" xml:space="preserve">
     <value>保存中...</value>
@@ -576,7 +609,7 @@
     <value>为您的连接配置新的外部 MCP 服务绑定</value>
   </data>
   <data name="SelectXiaozhiMcpEndpoint" xml:space="preserve">
-    <value>请选择一个小智连接</value>
+    <value>请选择一个 AI 连接</value>
   </data>
   <data name="ServiceNameRequired" xml:space="preserve">
     <value>服务名称为必填项</value>
@@ -623,7 +656,7 @@
     <value>尝试调整搜索条件</value>
   </data>
   <data name="GetStartedCreateConnection" xml:space="preserve">
-    <value>开始创建您的第一个小智连接</value>
+    <value>开始创建您的第一个 AI 连接</value>
   </data>
   <data name="CreateConnectionButton" xml:space="preserve">
     <value>创建连接</value>
@@ -962,7 +995,19 @@
     <value>开源的多租户 MCP 服务管理平台</value>
   </data>
   <data name="LandingPageSubtitle" xml:space="preserve">
-    <value>基于 .NET 10 和 Blazor WebAssembly 构建，为小智 AI 助手提供灵活的 Model Context Protocol 服务配置和管理能力</value>
+    <value>基于 .NET 10 和 Blazor WebAssembly 构建，为各类 AI 助手提供灵活的 Model Context Protocol 服务配置和管理能力</value>
+  </data>
+  <data name="SupportedConnections" xml:space="preserve">
+    <value>支持的连接类型</value>
+  </data>
+  <data name="SupportedConnectionsDescription" xml:space="preserve">
+    <value>AI 连接是 AI 助手与平台之间的实时 WebSocket 通道。将 MCP 服务工具绑定到连接端点后，AI 助手即可直接调用这些工具。目前支持以下接入类型：</value>
+  </data>
+  <data name="ConnectionTypeXiaozhiDesc" xml:space="preserve">
+    <value>开源 AI 语音/文字助手终端，绑定 MCP 服务工具后，小智 AI 可获得联网搜索、自动化操作、知识检索等扩展能力。</value>
+  </data>
+  <data name="ConnectionTypeTuyaDesc" xml:space="preserve">
+    <value>涂鸦智能 IoT 平台，通过 WebSocket 端点接入，绑定 MCP 服务工具后，AI 可直接查询设备状态、控制涂鸦生态下的智能家居设备。</value>
   </data>
   <data name="EnterDashboard" xml:space="preserve">
     <value>进入控制台</value>
@@ -980,13 +1025,13 @@
     <value>多租户支持</value>
   </data>
   <data name="MultiTenantDescription" xml:space="preserve">
-    <value>基于 Keycloak 的 OpenID Connect 认证，每个用户独立配置自己的 MCP 服务和小智连接</value>
+    <value>基于 Keycloak 的 OpenID Connect 认证，每个用户独立配置自己的 MCP 服务和 AI 连接</value>
   </data>
   <data name="FlexibleServiceBinding" xml:space="preserve">
     <value>灵活的服务绑定</value>
   </data>
   <data name="FlexibleServiceBindingDescription" xml:space="preserve">
-    <value>将不同的 MCP 服务绑定到指定的小智节点，支持多种认证方式和配置模式</value>
+    <value>将不同的 MCP 服务绑定到指定的 AI 连接节点，支持多种认证方式和配置模式</value>
   </data>
   <data name="ModernTechStack" xml:space="preserve">
     <value>现代化技术栈</value>
@@ -1037,10 +1082,10 @@
     <value>使用 Keycloak 账号登录平台</value>
   </data>
   <data name="Step2ConfigureXiaozhi" xml:space="preserve">
-    <value>2. 配置小智连接</value>
+    <value>2. 配置 AI 连接</value>
   </data>
   <data name="Step2ConfigureXiaozhiDescription" xml:space="preserve">
-    <value>添加你的小智 AI 服务器地址</value>
+    <value>添加 AI 服务的端点地址</value>
   </data>
   <data name="Step3CreateMcpService" xml:space="preserve">
     <value>3. 创建 MCP 服务</value>
@@ -1052,7 +1097,7 @@
     <value>4. 绑定服务到节点</value>
   </data>
   <data name="Step4BindServiceDescription" xml:space="preserve">
-    <value>将 MCP 服务绑定到小智节点，开始使用</value>
+    <value>将 MCP 服务绑定到 AI 连接节点，开始使用</value>
   </data>
   
   <!-- 着陆页布局 - 导航 -->
@@ -1185,7 +1230,7 @@
     <value>还没有服务绑定</value>
   </data>
   <data name="CreateFirstBinding" xml:space="preserve">
-    <value>创建您的第一个服务绑定，将小智端点连接到 MCP 服务</value>
+    <value>创建您的第一个服务绑定，将 AI 连接端点与 MCP 服务连接起来</value>
   </data>
   <data name="NoMatchingBindings" xml:space="preserve">
     <value>未找到与 "{0}" 匹配的绑定</value>
@@ -1215,10 +1260,10 @@
     <value>已选 {0} 个工具</value>
   </data>
   <data name="ChooseXiaozhiConnection" xml:space="preserve">
-    <value>选择小智连接</value>
+    <value>选择 AI 连接</value>
   </data>
   <data name="SelectConnectionHelp" xml:space="preserve">
-    <value>选择要绑定 MCP 服务的小智连接端点</value>
+    <value>选择要绑定 MCP 服务的 AI 连接端点</value>
   </data>
   <data name="ChooseMcpService" xml:space="preserve">
     <value>选择 MCP 服务</value>
@@ -1272,7 +1317,7 @@
     <value>已选服务</value>
   </data>
   <data name="NowSelectConnectionAndTools" xml:space="preserve">
-    <value>现在选择小智连接并配置工具</value>
+    <value>现在选择 AI 连接并配置工具</value>
   </data>
   <data name="UseThisService" xml:space="preserve">
     <value>使用此服务</value>
