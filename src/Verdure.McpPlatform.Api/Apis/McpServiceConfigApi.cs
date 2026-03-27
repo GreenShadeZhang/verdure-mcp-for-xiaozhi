@@ -18,8 +18,7 @@ public static class McpServiceConfigApi
     {
         var api = app.MapGroup("api/mcp-services")
             .RequireAuthorization()
-            .WithTags("MCP Service Configurations")
-            .WithOpenApi();
+            .WithTags("MCP Service Configurations");
 
         api.MapGet("/", GetMcpServicesAsync)
             .WithName("GetMcpServices")

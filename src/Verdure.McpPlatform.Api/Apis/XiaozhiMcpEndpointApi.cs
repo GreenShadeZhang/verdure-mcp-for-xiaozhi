@@ -18,8 +18,7 @@ public static class XiaozhiMcpEndpointApi
     {
         var api = app.MapGroup("api/xiaozhi-mcp-endpoints")
             .RequireAuthorization()
-            .WithTags("Xiaozhi MCP Endpoints")
-            .WithOpenApi();
+            .WithTags("Xiaozhi MCP Endpoints");
 
         api.MapGet("/", GetMcpServersAsync)
             .WithName("GetMcpServers")

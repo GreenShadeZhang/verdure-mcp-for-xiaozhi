@@ -365,6 +365,14 @@ public sealed class TuyaMcpSessionService : ISessionService
                 _logger.LogInformation("Tuya server {ServerId}: migrate received; will reconnect", ServerId);
                 await CleanupConnectionAsync();
                 break;
+            case "sys/error":
+                // Tuya gateway pushes sys/error to notify the client of a server-side error
+                // (e.g. invalid token, malformed request, rate limiting).
+                // The error detail is carried in the request payload.
+                _logger.LogError(
+                    "Tuya server {ServerId}: received sys/error from gateway, payload={Payload}",
+                    ServerId, req.Request);
+                break;
             default:
                 _logger.LogWarning("Tuya server {ServerId}: unknown method {Method}", ServerId, req.Method);
                 break;

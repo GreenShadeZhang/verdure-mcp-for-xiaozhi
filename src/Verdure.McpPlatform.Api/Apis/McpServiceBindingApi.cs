@@ -17,8 +17,7 @@ public static class McpServiceBindingApi
     {
         var api = app.MapGroup("api/mcp-bindings")
             .RequireAuthorization()
-            .WithTags("MCP Bindings")
-            .WithOpenApi();
+            .WithTags("MCP Bindings");
 
         api.MapGet("/server/{serverId}", GetBindingsByServerAsync)
             .WithName("GetBindingsByServer")
