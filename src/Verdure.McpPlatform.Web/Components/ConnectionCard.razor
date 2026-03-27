@@ -82,6 +82,28 @@
         
         <!-- Status Pills -->
         <div class="d-flex flex-wrap align-center mb-3" style="gap: 8px;">
+            <!-- Connection Type Badge -->
+            @if (string.Equals(Connection.ConnectionType, "tuya", StringComparison.OrdinalIgnoreCase))
+            {
+                <MudChip T="string"
+                         Size="Size.Small"
+                         Variant="Variant.Filled"
+                         Style="background: #FF6600; color: white; font-weight: 500; border-radius: 16px;"
+                         Icon="@Icons.Material.Filled.Cloud">
+                    @Loc["ConnectionTypeTuya"]
+                </MudChip>
+            }
+            else
+            {
+                <MudChip T="string"
+                         Size="Size.Small"
+                         Variant="Variant.Filled"
+                         Style="background: var(--m3-secondary-container); color: var(--m3-on-secondary-container); font-weight: 500; border-radius: 16px;"
+                         Icon="@Icons.Material.Filled.SmartToy">
+                    @Loc["ConnectionTypeXiaozhi"]
+                </MudChip>
+            }
+
             <!-- Connection Status -->
             @if (Connection.IsEnabled)
             {

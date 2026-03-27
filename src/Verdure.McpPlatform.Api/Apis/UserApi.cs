@@ -19,12 +19,8 @@ public static class UserApi
         api.MapPost("/sync", SyncCurrentUserAsync)
             .RequireAuthorization()
             .WithName("SyncCurrentUser")
-            .WithOpenApi(operation =>
-            {
-                operation.Summary = "Sync current user from JWT claims to Identity database";
-                operation.Description = "This endpoint should be called by the frontend after successful login to ensure user exists in the Identity database.";
-                return operation;
-            })
+            .WithSummary("Sync current user from JWT claims to Identity database")
+            .WithDescription("This endpoint should be called by the frontend after successful login to ensure user exists in the Identity database.")
             .Produces<UserSyncResponse>(StatusCodes.Status200OK)
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
@@ -33,12 +29,8 @@ public static class UserApi
         api.MapGet("/me", GetCurrentUserAsync)
             .RequireAuthorization()
             .WithName("GetCurrentUser")
-            .WithOpenApi(operation =>
-            {
-                operation.Summary = "Get current authenticated user information";
-                operation.Description = "Returns the user information from the Identity database.";
-                return operation;
-            })
+            .WithSummary("Get current authenticated user information")
+            .WithDescription("Returns the user information from the Identity database.")
             .Produces<CurrentUserResponse>(StatusCodes.Status200OK)
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .Produces<ProblemDetails>(StatusCodes.Status404NotFound);

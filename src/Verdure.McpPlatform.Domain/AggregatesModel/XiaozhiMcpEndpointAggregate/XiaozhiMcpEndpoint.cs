@@ -3,12 +3,16 @@
 namespace Verdure.McpPlatform.Domain.AggregatesModel.XiaozhiMcpEndpointAggregate;
 
 /// <summary>
-/// Xiaozhi MCP Endpoint aggregate root - represents Xiaozhi AI's MCP endpoint configuration
-/// This configures the WebSocket endpoint where Xiaozhi AI connects to receive MCP services
+/// Xiaozhi MCP Endpoint aggregate root - represents an MCP endpoint configuration.
+/// Supports both Xiaozhi AI (WebSocket) and Tuya IoT Cloud (HMAC-signed WebSocket) connection types.
 /// </summary>
 public class XiaozhiMcpEndpoint : Entity, IAggregateRoot
 {
     public string Name { get; private set; }
+    /// <summary>
+    /// For Xiaozhi: WebSocket endpoint URL (ws://...).
+    /// For Tuya: Tuya IoT platform REST base URL (https://openapi.tuyaeu.com).
+    /// </summary>
     public string Address { get; private set; }
     public string UserId { get; private set; }
     public string? Description { get; private set; }
@@ -19,6 +23,17 @@ public class XiaozhiMcpEndpoint : Entity, IAggregateRoot
     public DateTime? LastConnectedAt { get; private set; }
     public DateTime? LastDisconnectedAt { get; private set; }
 
+    /// <summary>
+    /// Connection type: "xiaozhi" (default) or "tuya".
+    /// </summary>
+    public string ConnectionType { get; private set; }
+
+    /// <summary>Tuya Access ID (also called access_key). Required when ConnectionType is "tuya".</summary>
+    public string? TuyaAccessId { get; private set; }
+
+    /// <summary>Tuya Access Secret. Required when ConnectionType is "tuya".</summary>
+    public string? TuyaAccessSecret { get; private set; }
+
     private readonly List<McpServiceBinding> _serviceBindings;
     public IReadOnlyCollection<McpServiceBinding> ServiceBindings => _serviceBindings.AsReadOnly();
 
@@ -28,25 +43,34 @@ public class XiaozhiMcpEndpoint : Entity, IAggregateRoot
         Name = string.Empty;
         Address = string.Empty;
         UserId = string.Empty;
+        ConnectionType = "xiaozhi";
     }
 
-    public XiaozhiMcpEndpoint(string name, string address, string userId, string? description = null) : this()
+    public XiaozhiMcpEndpoint(string name, string address, string userId, string? description = null,
+        string? connectionType = null, string? tuyaAccessId = null, string? tuyaAccessSecret = null) : this()
     {
         GenerateId(); // Generate Guid Version 7 ID
         Name = name ?? throw new ArgumentNullException(nameof(name));
         Address = address ?? throw new ArgumentNullException(nameof(address));
         UserId = userId ?? throw new ArgumentNullException(nameof(userId));
         Description = description;
+        ConnectionType = string.IsNullOrWhiteSpace(connectionType) ? "xiaozhi" : connectionType.ToLowerInvariant();
+        TuyaAccessId = tuyaAccessId;
+        TuyaAccessSecret = tuyaAccessSecret;
         IsEnabled = false; // Disabled by default until user enables
         IsConnected = false;
         CreatedAt = DateTime.UtcNow;
     }
 
-    public void UpdateInfo(string name, string address, string? description = null)
+    public void UpdateInfo(string name, string address, string? description = null,
+        string? connectionType = null, string? tuyaAccessId = null, string? tuyaAccessSecret = null)
     {
         Name = name ?? throw new ArgumentNullException(nameof(name));
         Address = address ?? throw new ArgumentNullException(nameof(address));
         Description = description;
+        ConnectionType = string.IsNullOrWhiteSpace(connectionType) ? "xiaozhi" : connectionType.ToLowerInvariant();
+        TuyaAccessId = tuyaAccessId;
+        TuyaAccessSecret = tuyaAccessSecret;
         UpdatedAt = DateTime.UtcNow;
     }
 

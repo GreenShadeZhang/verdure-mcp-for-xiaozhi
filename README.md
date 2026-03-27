@@ -3,7 +3,7 @@
   
   # Verdure MCP Platform
   
-  > 开源的多租户 MCP 服务管理平台，为小智 AI 助手提供灵活的 Model Context Protocol 服务配置和管理能力
+  > 开源的多租户 MCP 服务管理平台，兼容多种 AI 助手并提供统一的 Model Context Protocol 服务配置和管理能力
   
   [![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
   [![Blazor](https://img.shields.io/badge/Blazor-WebAssembly-512BD4?logo=blazor)](https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor)
@@ -21,7 +21,9 @@
 
 **立即体验，无需安装！**
 
-🔗 **在线平台**: [https://xiaozhi.verdure-hiro.cn/](https://xiaozhi.verdure-hiro.cn/)
+🔗 **在线平台（主入口）**: [https://hub.verdure-hiro.cn/](https://hub.verdure-hiro.cn/)
+
+🔗 **兼容入口（旧域名，持续可用）**: [https://xiaozhi.verdure-hiro.cn/](https://xiaozhi.verdure-hiro.cn/)
 
 - ✅ 免费注册，即刻使用
 - ✅ 无需部署，云端托管
@@ -69,15 +71,22 @@
 
 ## 📖 项目介绍
 
-Verdure MCP Platform 是一个基于 .NET 10 和 Blazor WebAssembly 构建的企业级多租户 SaaS 平台，专为小智 AI 助手设计，提供完整的 Model Context Protocol (MCP) 服务管理解决方案。
+Verdure MCP Platform 是一个基于 .NET 10 和 Blazor WebAssembly 构建的企业级多租户 SaaS 平台，面向多种 AI 助手提供统一的 Model Context Protocol (MCP) 服务管理与接入能力。
 
 **核心功能**：
 - 🔐 多租户身份认证系统（基于 Keycloak OpenID Connect）
-- 🌐 每个用户可配置自己的小智 AI 服务器地址
-- 🔗 将不同的 MCP 服务绑定到指定节点
+- 🌐 每个用户可配置自己的 AI 助手连接（如小智、涂鸦等）
+- 🔗 将不同的 MCP 服务绑定到指定助手节点
 - 🚀 通过 WebSocket 连接提供对应的 MCP 服务
 - 💾 仓储模式 (Repository Pattern) 实现数据访问层
 - 🗄️ 支持 PostgreSQL 和 SQLite 多数据库
+
+## 🆕 最新进展
+
+- ✅ 在线域名已升级为统一入口: [https://hub.verdure-hiro.cn/](https://hub.verdure-hiro.cn/)
+- ✅ 旧域名保持兼容可用: [https://xiaozhi.verdure-hiro.cn/](https://xiaozhi.verdure-hiro.cn/)
+- ✅ 连接层已从单一小智扩展为多助手兼容（包含 Tuya 连接类型）
+- ✅ 已向 Tuya 官方生态贡献 C# SDK 项目: [tuya/tuya-mcp-sdk](https://github.com/tuya/tuya-mcp-sdk)
 
 ## ✨ 核心特性
 
@@ -146,13 +155,13 @@ verdure-mcp-for-xiaozhi/
 
 **最快捷的方式**
 
-访问 [在线平台](https://xiaozhi.verdure-hiro.cn/)
+访问 [在线平台](https://hub.verdure-hiro.cn/)（旧域名 [https://xiaozhi.verdure-hiro.cn/](https://xiaozhi.verdure-hiro.cn/) 也可访问）
 
 ✅ 无需安装<br>
 ✅ 即开即用<br>
 ✅ 云端托管
 
-[立即体验 →](https://xiaozhi.verdure-hiro.cn/)
+[立即体验 →](https://hub.verdure-hiro.cn/)
 
 </td>
 <td align="center" width="33%">
@@ -334,11 +343,11 @@ dotnet run --project src/Verdure.McpPlatform.Web
 
 ### 详细步骤
 
-1. **登录系统** - 使用 Keycloak 账号登录平台，或访问[在线服务](https://xiaozhi.verdure-hiro.cn/)直接注册
-2. **配置小智连接** - 在"小智连接"页面添加你的小智 AI 服务器 WebSocket 地址
+1. **登录系统** - 使用 Keycloak 账号登录平台，或访问[在线服务](https://hub.verdure-hiro.cn/)直接注册（旧域名 [https://xiaozhi.verdure-hiro.cn/](https://xiaozhi.verdure-hiro.cn/) 同样可用）
+2. **配置助手连接** - 在"助手连接"页面添加你的 AI 助手连接信息（支持小智与 Tuya 等连接类型）
 3. **创建 MCP 服务** - 在"MCP 服务"页面配置服务，支持 Bearer Token、Basic Auth、OAuth2、API Key 等多种认证
-4. **绑定服务到节点** - 在"服务绑定"页面将 MCP 服务绑定到小智节点，选择需要的工具
-5. **开始使用** - 在小智中就可以使用绑定的 MCP 服务提供的各种能力了！
+4. **绑定服务到节点** - 在"服务绑定"页面将 MCP 服务绑定到指定助手节点，选择需要的工具
+5. **开始使用** - 在你的 AI 助手中使用绑定 MCP 服务提供的能力
 
 💡 **提示**: 观看我们的 [B站视频教程](#-视频教程) 获取更详细的操作演示
 
@@ -349,7 +358,7 @@ dotnet run --project src/Verdure.McpPlatform.Web
 <details>
 <summary><b>什么是 MCP (Model Context Protocol)？</b></summary>
 <br>
-MCP 是一个开放的 AI 上下文协议标准，它允许 AI 助手通过标准化的接口访问各种外部工具和数据源。通过 MCP，小智可以连接到文件系统、数据库、API 服务等，大大扩展其能力边界。
+MCP 是一个开放的 AI 上下文协议标准，它允许 AI 助手通过标准化的接口访问各种外部工具和数据源。通过 MCP，不同助手都可以连接到文件系统、数据库、API 服务等，大大扩展其能力边界。
 </details>
 
 <details>
@@ -501,7 +510,7 @@ MCP 是一个开放的 AI 上下文协议标准，它允许 AI 助手通过标�
 - [Entity Framework Core](https://docs.microsoft.com/ef/core/) - 现代化的 ORM 框架
 - [.NET Aspire](https://learn.microsoft.com/dotnet/aspire/) - 云原生应用编排框架
 
-特别感谢所有支持和使用本项目的小智用户和开发者！
+特别感谢所有支持和使用本项目的 AI 助手用户和开发者！
 
 ---
 

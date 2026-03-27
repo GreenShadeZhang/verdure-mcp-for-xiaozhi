@@ -28,7 +28,9 @@ public class XiaozhiMcpEndpointService : IXiaozhiMcpEndpointService
 
     public async Task<XiaozhiMcpEndpointDto> CreateAsync(CreateXiaozhiMcpEndpointRequest request, string userId)
     {
-        var server = new XiaozhiMcpEndpoint(request.Name, request.Address, userId, request.Description);
+        var server = new XiaozhiMcpEndpoint(
+            request.Name, request.Address, userId, request.Description,
+            request.ConnectionType, request.TuyaAccessId, request.TuyaAccessSecret);
         
         _repository.Add(server);
         await _repository.UnitOfWork.SaveEntitiesAsync();
@@ -97,7 +99,13 @@ public class XiaozhiMcpEndpointService : IXiaozhiMcpEndpointService
             throw new UnauthorizedAccessException($"Server {id} not found or access denied");
         }
 
-        server.UpdateInfo(request.Name, request.Address, request.Description);
+        // For Tuya connections, preserve the existing secret if the update doesn't provide a new one
+        var tuyaSecret = string.IsNullOrWhiteSpace(request.TuyaAccessSecret)
+            ? server.TuyaAccessSecret
+            : request.TuyaAccessSecret;
+
+        server.UpdateInfo(request.Name, request.Address, request.Description,
+            request.ConnectionType, request.TuyaAccessId, tuyaSecret);
         _repository.Update(server);
         await _repository.UnitOfWork.SaveEntitiesAsync();
 
@@ -177,7 +185,9 @@ public class XiaozhiMcpEndpointService : IXiaozhiMcpEndpointService
             UpdatedAt = server.UpdatedAt,
             LastConnectedAt = server.LastConnectedAt,
             LastDisconnectedAt = server.LastDisconnectedAt,
-            ServiceBindings = await MapBindingsToDtoAsync(server.ServiceBindings, server.Name)
+            ServiceBindings = await MapBindingsToDtoAsync(server.ServiceBindings, server.Name),
+            ConnectionType = server.ConnectionType,
+            TuyaAccessId = server.TuyaAccessId,
         };
     }
 

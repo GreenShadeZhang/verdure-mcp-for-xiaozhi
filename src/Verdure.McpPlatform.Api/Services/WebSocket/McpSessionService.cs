@@ -11,7 +11,7 @@ namespace Verdure.McpPlatform.Api.Services.WebSocket;
 /// Manages a single MCP WebSocket session
 /// Each instance handles one MCP server node connection
 /// </summary>
-public class McpSessionService : IAsyncDisposable
+public class McpSessionService : ISessionService
 {
     private readonly ILogger<McpSessionService> _logger;
     private readonly ILoggerFactory _loggerFactory;

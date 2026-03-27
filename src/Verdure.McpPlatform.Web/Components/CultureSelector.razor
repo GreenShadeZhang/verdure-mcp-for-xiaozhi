@@ -11,18 +11,21 @@
          TransformOrigin="Origin.TopCenter"
          Dense="true">
     <ActivatorContent>
+        <!-- MudBlazor 9: ActivatorContent is RenderFragment<MenuContext>; use context.ToggleAsync(e) -->
         <!-- 窄屏：仅图标按钮 -->
         <MudIconButton Icon="@Icons.Material.Filled.Translate"
                        Size="Size.Medium"
                        Class="d-inline-flex d-sm-none"
-                       Style="@($"color: {TextColor};")">
+                       Style="@($"color: {TextColor};")"
+                       @onclick="@(e => context.ToggleAsync(e))">
         </MudIconButton>
         <!-- 宽屏：带文字的按钮 -->
         <MudButton Variant="Variant.Text" 
                    StartIcon="@Icons.Material.Filled.Translate"
                    Size="Size.Small"
                    Class="d-none d-sm-inline-flex"
-                   Style="@($"color: {TextColor};")">
+                   Style="@($"color: {TextColor};")"
+                   @onclick="@(e => context.ToggleAsync(e))">
             @GetCultureDisplayName(_currentCulture)
         </MudButton>
     </ActivatorContent>
@@ -54,8 +57,14 @@
     [Parameter]
     public string TextColor { get; set; } = "var(--m3-on-surface-variant)";
     
-    private string _currentCulture = CultureInfo.CurrentUICulture.Name;
-    
+    private string _currentCulture = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        // Read culture AFTER Blazor has applied applicationCulture at startup
+        _currentCulture = CultureInfo.CurrentUICulture.Name;
+    }
+
     private readonly CultureInfo[] _supportedCultures = new[]
     {
         new CultureInfo("zh-CN"),
@@ -94,18 +103,19 @@
             // Save culture to browser localStorage
             await JSRuntime.InvokeVoidAsync("blazorCulture.set", cultureName);
             
-            // Small delay to ensure localStorage is written
-            await Task.Delay(100);
-
-            // Force full page reload to apply new culture
-            // This is necessary because Blazor WebAssembly sets culture at startup
-            Navigation.NavigateTo(Navigation.Uri, forceLoad: true);
+            // Use window.location.reload() instead of NavigateTo(uri, forceLoad: true).
+            // In .NET 9/10 Blazor WASM, NavigateTo with forceLoad is deprecated and
+            // unreliable for same-URL navigation — the browser may ignore the reload
+            // because the destination matches the current URL.
+            await JSRuntime.InvokeVoidAsync("eval", "window.location.reload()");
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error changing culture: {ex.Message}");
-            // If JavaScript interop fails, still try to reload
-            Navigation.NavigateTo(Navigation.Uri, forceLoad: true);
+            // Fallback: navigate with a cache-busting timestamp to guarantee reload
+            var sep = Navigation.Uri.Contains('?') ? "&" : "?";
+            Navigation.NavigateTo($"{Navigation.Uri}{sep}_t={DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}",
+                new NavigationOptions { ForceLoad = true });
         }
     }
 }
