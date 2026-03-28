@@ -3,7 +3,6 @@ using System.Net.WebSockets;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Nodes;
 using ModelContextProtocol.Client;
 using ModelContextProtocol.Protocol;
 using Verdure.McpPlatform.Application.Services;
@@ -383,34 +382,58 @@ public sealed class TuyaMcpSessionService : ISessionService
     {
         try
         {
-            // Collect tools from all bound MCP services
-            var tools = new List<Tool>();
+            if (_config.McpServices.Count == 0)
+            {
+                _logger.LogWarning("Tuya server {ServerId}: no MCP services configured for tools/list request", ServerId);
+                await ReplyErrorAsync(req, "No MCP services configured for this endpoint", ct);
+                return;
+            }
+
+            var tools = new List<object>();
+
             foreach (var service in _config.McpServices)
             {
                 try
                 {
-                    await using var client = await _mcpClientService.CreateMcpClientAsync(
-                        service.ServiceName,
-                        service.NodeAddress,
-                        service.Protocol,
-                        service.AuthenticationType,
-                        service.AuthenticationConfig,
-                        cancellationToken: ct);
+                    foreach (var tool in service.SelectedTools)
+                    {
+                        var (properties, required) = ParseToolSchema(tool);
 
-                    var serviceTools = await client.ListToolsAsync(cancellationToken: ct);
-                    // Apply tool filter if configured
-                    var filtered = service.SelectedTools.Count > 0
-                        ? serviceTools.Where(t => service.SelectedTools.Any(s => s.Name == t.ProtocolTool.Name))
-                        : serviceTools;
-                    tools.AddRange(filtered.Select(t => t.ProtocolTool));
+                        tools.Add(new
+                        {
+                            name = tool.Name,
+                            description = tool.Description,
+                            inputSchema = new
+                            {
+                                properties,
+                                required,
+                                title = $"{tool.Name}Arguments",
+                                type = "object"
+                            }
+                        });
+                    }
+
+                    _logger.LogDebug(
+                        "Tuya server {ServerId}: loaded {Count} tools from binding for service {ServiceName}",
+                        ServerId,
+                        service.SelectedTools.Count,
+                        service.ServiceName);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogWarning(ex, "Tuya server {ServerId}: failed to list tools from service {Service}", ServerId, service.ServiceName);
+                    _logger.LogError(
+                        ex,
+                        "Tuya server {ServerId}: failed to build tools/list payload for service {ServiceName}",
+                        ServerId,
+                        service.ServiceName);
                 }
             }
 
-            var result = new ListToolsResult { Tools = tools };
+            var result = new
+            {
+                tools = tools.ToArray()
+            };
+
             var resultJson = JsonSerializer.Serialize(result, McpJsonOptions);
             await ReplyAsync(req, resultJson, ct);
         }
@@ -424,16 +447,23 @@ public sealed class TuyaMcpSessionService : ISessionService
     private async Task HandleToolsCallAsync(TuyaRequest req, CancellationToken ct)
     {
         string? toolName;
-        IReadOnlyDictionary<string, object?>? toolArgs;
+        Dictionary<string, object?>? toolArgs;
 
         try
         {
-            var node = JsonNode.Parse(req.Request);
-            toolName = node?["params"]?["name"]?.GetValue<string>();
-            var argsNode = node?["params"]?["arguments"];
-            toolArgs = argsNode is not null
-                ? argsNode.AsObject().ToDictionary(kv => kv.Key, kv => (object?)kv.Value?.DeepClone())
-                : null;
+            using var requestDocument = JsonDocument.Parse(req.Request);
+            var paramsElement = requestDocument.RootElement.GetProperty("params");
+
+            toolName = paramsElement.GetProperty("name").GetString();
+            toolArgs = new Dictionary<string, object?>();
+
+            if (paramsElement.TryGetProperty("arguments", out var argsElement))
+            {
+                foreach (var property in argsElement.EnumerateObject())
+                {
+                    toolArgs[property.Name] = JsonElementToObject(property.Value);
+                }
+            }
         }
         catch (Exception ex)
         {
@@ -448,51 +478,70 @@ public sealed class TuyaMcpSessionService : ISessionService
             return;
         }
 
-        // Find which service owns the requested tool
-        McpServiceEndpoint? targetService = null;
-        foreach (var service in _config.McpServices)
-        {
-            if (service.SelectedTools.Count > 0)
-            {
-                if (service.SelectedTools.Any(t => t.Name == toolName))
-                {
-                    targetService = service;
-                    break;
-                }
-            }
-            else
-            {
-                // No tool filter – try calling this service
-                targetService = service;
-                break;
-            }
-        }
+        var candidateServices = _config.McpServices
+            .Where(service => service.SelectedTools != null && service.SelectedTools.Any(tool => tool.Name == toolName))
+            .ToList();
 
-        if (targetService == null)
+        if (candidateServices.Count == 0)
         {
-            // Fallback: try each service
-            targetService = _config.McpServices.FirstOrDefault();
-        }
-
-        if (targetService == null)
-        {
-            await ReplyErrorAsync(req, $"no service found for tool '{toolName}'", ct);
+            _logger.LogWarning("Tuya server {ServerId}: tool {ToolName} not found in any configured service", ServerId, toolName);
+            await ReplyErrorAsync(req, $"tool {toolName} not configured", ct);
             return;
         }
 
+        Exception? lastException = null;
+        object? finalResult = null;
+        var userContextHeaders = await GetUserContextHeadersAsync();
+
         try
         {
-            await using var client = await _mcpClientService.CreateMcpClientAsync(
-                targetService.ServiceName,
-                targetService.NodeAddress,
-                targetService.Protocol,
-                targetService.AuthenticationType,
-                targetService.AuthenticationConfig,
-                cancellationToken: ct);
+            foreach (var service in candidateServices)
+            {
+                McpClient? transientClient = null;
+                try
+                {
+                    transientClient = await _mcpClientService.CreateMcpClientAsync(
+                        $"McpService_{service.ServiceName}",
+                        service.NodeAddress,
+                        service.Protocol,
+                        service.AuthenticationType,
+                        service.AuthenticationConfig,
+                        additionalHeaders: userContextHeaders,
+                        cancellationToken: ct);
 
-            var callResult = await client.CallToolAsync(toolName, toolArgs, cancellationToken: ct);
-            var resultJson = JsonSerializer.Serialize(callResult, McpJsonOptions);
-            await ReplyAsync(req, resultJson, ct);
+                    finalResult = await transientClient.CallToolAsync(toolName, toolArgs, cancellationToken: ct);
+
+                    await transientClient.DisposeAsync();
+                    transientClient = null;
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    lastException = ex;
+                    _logger.LogWarning(
+                        ex,
+                        "Tuya server {ServerId}: tool {ToolName} call failed on service {ServiceName}, trying next",
+                        ServerId,
+                        toolName,
+                        service.ServiceName);
+                }
+                finally
+                {
+                    if (transientClient != null)
+                    {
+                        try { await transientClient.DisposeAsync(); } catch { }
+                    }
+                }
+            }
+
+            if (finalResult != null)
+            {
+                var resultJson = JsonSerializer.Serialize(finalResult, McpJsonOptions);
+                await ReplyAsync(req, resultJson, ct);
+                return;
+            }
+
+            throw lastException ?? new InvalidOperationException($"Tool {toolName} call failed on all candidate services");
         }
         catch (Exception ex)
         {
@@ -537,6 +586,101 @@ public sealed class TuyaMcpSessionService : ISessionService
         };
         var errorJson = JsonSerializer.Serialize(errorResult, McpJsonOptions);
         await ReplyAsync(req, errorJson, ct);
+    }
+
+    private (Dictionary<string, object> Properties, string[] Required) ParseToolSchema(SelectedToolInfo tool)
+    {
+        var properties = new Dictionary<string, object>();
+        var required = Array.Empty<string>();
+
+        if (string.IsNullOrEmpty(tool.InputSchema))
+        {
+            return (properties, required);
+        }
+
+        try
+        {
+            using var schemaDoc = JsonDocument.Parse(tool.InputSchema);
+
+            if (schemaDoc.RootElement.TryGetProperty("properties", out var propsElement))
+            {
+                properties = JsonElementToObject(propsElement) as Dictionary<string, object>
+                    ?? new Dictionary<string, object>();
+            }
+
+            if (schemaDoc.RootElement.TryGetProperty("required", out var requiredElement))
+            {
+                required = requiredElement.EnumerateArray()
+                    .Select(item => item.GetString() ?? string.Empty)
+                    .ToArray();
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Tuya server {ServerId}: failed to parse InputSchema for tool {ToolName}", ServerId, tool.Name);
+        }
+
+        return (properties, required);
+    }
+
+    private static object? JsonElementToObject(JsonElement element)
+    {
+        return element.ValueKind switch
+        {
+            JsonValueKind.String => element.GetString(),
+            JsonValueKind.Number => element.TryGetInt32(out var intValue) ? intValue : element.GetDouble(),
+            JsonValueKind.True => true,
+            JsonValueKind.False => false,
+            JsonValueKind.Null => null,
+            JsonValueKind.Array => element.EnumerateArray().Select(JsonElementToObject).ToArray(),
+            JsonValueKind.Object => element.EnumerateObject().ToDictionary(property => property.Name, property => JsonElementToObject(property.Value)),
+            _ => element.ToString()
+        };
+    }
+
+    private async Task<Dictionary<string, string>?> GetUserContextHeadersAsync()
+    {
+        try
+        {
+            using var scope = _serviceScopeFactory.CreateScope();
+            var userInfoService = scope.ServiceProvider.GetRequiredService<IUserInfoService>();
+
+            var userInfoMap = await userInfoService.GetUsersByIdsAsync(new[] { _config.UserId });
+            if (!userInfoMap.TryGetValue(_config.UserId, out var userInfo))
+            {
+                _logger.LogWarning(
+                    "Tuya server {ServerId}: user {UserId} not found, user context headers will not be added",
+                    ServerId,
+                    _config.UserId);
+                return null;
+            }
+
+            var headers = new Dictionary<string, string>
+            {
+                ["X-User-Id"] = userInfo.UserId
+            };
+
+            if (!string.IsNullOrEmpty(userInfo.Email))
+            {
+                headers["X-User-Email"] = userInfo.Email;
+            }
+
+            _logger.LogDebug(
+                "Tuya server {ServerId}: adding user context headers: UserId={UserId}, Email={Email}",
+                ServerId,
+                userInfo.UserId,
+                userInfo.Email ?? "(not set)");
+
+            return headers;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(
+                ex,
+                "Tuya server {ServerId}: error fetching user information, user context headers will not be added",
+                ServerId);
+            return null;
+        }
     }
 
     // ─── Cleanup ───────────────────────────────────────────────────────────
